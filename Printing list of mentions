@@ -1,0 +1,16 @@
+import tweepy
+import time
+
+auth = tweepy.OAuthHandler(***REMOVED***,***REMOVED***)
+auth.set_access_token(***REMOVED***,***REMOVED***)
+
+api = tweepy.API(auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+
+user = api.me()
+
+
+mentions = api.mentions_timeline()
+
+for mention in mentions:
+	print(str(mention.id) + '-' + mention.text)
+  
