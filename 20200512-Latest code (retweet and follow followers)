@@ -1,0 +1,30 @@
+import tweepy
+import time
+
+auth = tweepy.OAuthHandler(***REMOVED***,***REMOVED***)
+auth.set_access_token(***REMOVED***,***REMOVED***)
+
+api = tweepy.API(auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+
+user = api.me()
+
+def main():
+
+	search = '#webinarg'
+
+	nrTweets = 500	
+
+	for tweet in tweepy.Cursor(api.search, search).items(nrTweets):
+		try:
+			print('Retweeted')
+			tweet.retweet()
+			time.sleep(10)
+		except tweepy.TweepError as e:
+			print(e.reason)
+		except StopIteration:
+			break
+
+	for follower in tweepy.Cursor(api.followers).items():
+		follower.follow()
+
+main()
