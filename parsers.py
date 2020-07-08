@@ -18,8 +18,8 @@ def parse_time(string):
     elif string.count('am') or string.count('pm'): 
         time = re.match(r'\d*(am)?(pm)?', string).group()
             
-    elif re.match(r'\d*[\.\:\sh](\d)?', string):
-        time = re.match(r'\d*[\.\:\sh](\d)?', string).group()
+    elif re.match(r'\d*[\.\:\sh]{1}(\d)?', string):
+        time = re.match(r'\d*[\.\:\sh]{1}(\d)?', string).group()
 
     if time: 
         time = int("".join(re.findall('\d', time)))
