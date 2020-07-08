@@ -66,6 +66,13 @@ TWEETS = [
     #19h
     #testtalkwebinar
     www.clickthislink.co.uk 
+    @webinarguru #spreadtheword""",
+
+    """We are holding a Webinar
+    #Jul-7
+    #19 00
+    #testtalkwebinar
+    www.clickthislink.co.uk 
     @webinarguru #spreadtheword"""
 
 ]
