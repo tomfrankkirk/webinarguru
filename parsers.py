@@ -3,9 +3,12 @@ import dateutil
 from urllib.parse import urlparse
 from urllib.parse import urlparse
 from dateutil.parser import parse as parse_datetime
+import itertools
 
 from django.forms import URLField
 from django.core.exceptions import ValidationError
+
+DF_COLUMNS = ['title', 'datetime', 'link', 'hashtags']
 
 def parse_time(string):
 
@@ -19,7 +22,7 @@ def parse_time(string):
         time = re.match(r'\d*(am)?(pm)?', string).group()
             
     elif re.match(r'\d*[\.\:\sh]{1}(\d)?', string):
-        time = re.match(r'\d*[\.\:\sh]{1}(\d)?', string).group()
+        time = re.match(r'\d*[\.\:\sh,]{1}(\d)?', string).group()
 
     if time: 
         time = int("".join(re.findall('\d', time)))
@@ -42,25 +45,27 @@ def validate_url(url):
 
 def parse_tweet(string):
 
-    out = {}
-    hashtags = []
+    # Split the tweet into single words 
+    raw_text = string.replace("\n", "").split()
 
-    raw_text = string.strip(" \n")
-    raw_text = raw_text.replace("\n", "").split()
+    # Store results in dict 
+    out = dict(zip(DF_COLUMNS, itertools.repeat(None)))
+    hashtags = []
+    title = []
+    finished_title = False
+
     for fragment in raw_text: 
+
+        # If its got a hash, its something important 
+        # This also means we have finished extracting the title 
         if fragment.count("#"):
+            finished_title = True 
             f = fragment.strip("#")
 
             # Try and parse as a combined datetime first 
             try: 
                 dt = parse_datetime(f, fuzzy=True)
-                if (dt.hour != 0) or (dt.minute != 0): 
-                    raise RuntimeError("haven't checked this code yet")
-                    time = (100 * dt.hour) + dt.minute
-                    assert 'time' not in out 
-                    out['time'] = f"{time:04d}"
-
-                assert 'datetime' not in out 
+                assert out['datetime'] is None  
                 out['datetime'] = dt 
                 continue 
 
@@ -70,8 +75,8 @@ def parse_tweet(string):
             # If that didn't work, try and parse it as a time 
             time = parse_time(f)
             if time: 
-                assert 'time' not in out 
-                out['time'] = time 
+                assert 'time' not in out
+                out['time'] = time
                 continue 
 
             # If that didn't work, its probably just a hashtag
@@ -80,11 +85,19 @@ def parse_tweet(string):
 
         # No hashtag - could be a website 
         if validate_url(fragment): 
-            assert 'link' not in out 
+            assert out['link'] is None  
             out['link'] = fragment
             continue 
 
-        # print("Did not process", fragment)
+        # Anything else; probably raw text from title 
+        if not fragment.count('@') and (not finished_title):
+            title.append(fragment)
         
-    out['hashtags'] = hashtags
+    if not out['datetime'].hour: 
+        time = out.pop('time')
+        out['datetime'] = out['datetime'].replace(
+            hour=int(time[:2]), minute=int(time[2:]))
+
+    out['title'] = " ".join(title)
+    out['hashtags'] = " ".join(hashtags)
     return out 
