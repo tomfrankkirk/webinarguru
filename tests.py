@@ -1,6 +1,5 @@
 import parsers
-
-# test urls - with/without https://
+import pandas as pd 
 
 TIMES = [
     ('1245', '1245'),
@@ -70,7 +69,7 @@ TWEETS = [
 
     """We are holding a Webinar
     #Jul-7
-    #19 00
+    #19,00
     #testtalkwebinar
     www.clickthislink.co.uk 
     @webinarguru #spreadtheword"""
@@ -86,5 +85,14 @@ def test_tweets():
         parsed = parsers.parse_tweet(tweet)
         print(parsed)
 
+def construct_sheet():
+    df = pd.DataFrame(columns=parsers.DF_COLUMNS)
+    for tweet in TWEETS:
+        t = parsers.parse_tweet(tweet)
+        df = df.append(t, ignore_index=True)
+
+    print(df)
+    df.to_excel('talks_index.xlsx')
+
 if __name__ == "__main__":
-    test_tweets()
+    construct_sheet()
