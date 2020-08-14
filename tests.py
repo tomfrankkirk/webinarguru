@@ -1,5 +1,11 @@
 import parsers
 import pandas as pd 
+import pygsheets
+import gspread
+
+gc = pygsheets.authorize(service_file='creds.json')
+
+
 
 TIMES = [
     ('1245', '1245'),
@@ -74,6 +80,8 @@ TWEETS = [
     www.clickthislink.co.uk 
     @webinarguru #spreadtheword"""
 
+    
+
 ]
 
 def test_times():
@@ -90,9 +98,12 @@ def construct_sheet():
     for tweet in TWEETS:
         t = parsers.parse_tweet(tweet)
         df = df.append(t, ignore_index=True)
+    sh=gc.open('Tutorial')
+    wks =sh[0]
+    wks.set_dataframe(df,(1,1))
 
     print(df)
-    df.to_excel('talks_index.xlsx')
+    
 
 if __name__ == "__main__":
     construct_sheet()
