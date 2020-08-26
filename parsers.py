@@ -8,7 +8,7 @@ import itertools
 from django.forms import URLField
 from django.core.exceptions import ValidationError
 
-DF_COLUMNS = ['title', 'datetime', 'link', 'hashtags']
+DF_COLUMNS = ['title', 'datetime', 'link', 'hashtags', 'tweet_id']
 
 def parse_time(string):
 
@@ -43,7 +43,7 @@ def validate_url(url):
     return True
 
 
-def parse_tweet(string):
+def parse_tweet(tid, string):
 
     # Split the tweet into single words 
     raw_text = string.replace("\n", "").split()
@@ -92,7 +92,12 @@ def parse_tweet(string):
         # Anything else; probably raw text from title 
         if not fragment.count('@') and (not finished_title):
             title.append(fragment)
-        
+
+    # If we didn't get a title, datetime and link, give up 
+    if not all([title, out['datetime'], out['link']]):
+        raise RuntimeError("Could not parse tweet") 
+
+    # Merge the date/hour attributes, if separate 
     if not out['datetime'].hour: 
         time = out.pop('time')
         out['datetime'] = out['datetime'].replace(
@@ -100,4 +105,5 @@ def parse_tweet(string):
 
     out['title'] = " ".join(title)
     out['hashtags'] = " ".join(hashtags)
+    out['tweet_id'] = tid
     return out 

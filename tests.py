@@ -1,11 +1,11 @@
 import parsers
-import pandas as pd 
+import itertools
+import dateparser
+
 import pygsheets
-import gspread
+import pandas as pd 
 
-gc = pygsheets.authorize(service_file='creds.json')
-
-
+from mentions import construct_sheet
 
 TIMES = [
     ('1245', '1245'),
@@ -29,7 +29,7 @@ DATE_TIMES = [
 
 ]
 
-TWEETS = [
+TWEETS = zip(itertools.count(), [
 
     """We are holding a Webinar
     #July7th
@@ -78,11 +78,23 @@ TWEETS = [
     #19,00
     #testtalkwebinar
     www.clickthislink.co.uk 
+    @webinarguru #spreadtheword""",
+
+    """We are holding a Webinar
+    #7.7.20
+    #1900BST
+    #testtalkwebinar
+    www.clickthislink.co.uk 
+    @webinarguru #spreadtheword""",
+
+    """We are holding a Webinar
+    #07/07/20
+    #1900GMT
+    #testtalkwebinar
+    www.clickthislink.co.uk 
     @webinarguru #spreadtheword"""
 
-    
-
-]
+])
 
 def test_times():
     for target, timestring in TIMES: 
@@ -93,17 +105,27 @@ def test_tweets():
         parsed = parsers.parse_tweet(tweet)
         print(parsed)
 
-def construct_sheet():
-    df = pd.DataFrame(columns=parsers.DF_COLUMNS)
-    for tweet in TWEETS:
-        t = parsers.parse_tweet(tweet)
-        df = df.append(t, ignore_index=True)
-    sh=gc.open('Tutorial')
-    wks =sh[0]
+def test_sheet():
+    gc = pygsheets.authorize(service_file='tkirk_key.json')
+    sh = gc.open('testing')
+    wks = sh[0]
+    df = construct_sheet(wks.get_as_df(), TWEETS)
     wks.set_dataframe(df,(1,1))
-
     print(df)
     
 
+def new_parsetime():
+    string = "Doesn't get much better than this! Our next Webinar on Acute Burns Monday 27th of July 20:00 (GMT) is open for registration. Definitely not one to miss. #SpreadTheWord @WebinarG @PlasticsFella @PLASTAUK @BritishBurn @plasticstrainee  https://t.co/BbzBtkw4Df"
+    fragments = string.split()
+
+    for substring in [ fragments[x:y] for x,y in itertools.combinations(range(len(fragments)+1), 2)]:
+        try: 
+            joined = " ".join(substring)
+            dt = dateparser.parse(joined)
+            if dt is not None: 
+                print(dt)
+        except: 
+            pass 
+
 if __name__ == "__main__":
-    construct_sheet()
+    test_sheet()
