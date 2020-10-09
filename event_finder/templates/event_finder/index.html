@@ -1,0 +1,78 @@
+{% load static %}
+
+<head>
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="jumbotron" id="jumbo">
+		  <h1 class="display-4 text-center">Webinar G</h1>
+		  <p class="lead text-center">The one-stop shop for finding medical education webinars.</p>
+		  <hr class="my-4">
+		  <p class="text-center">To share your webinar on this platform for free tag @webinarG and tweet the details of your webinar as follows:</p>
+		  <table class="tweet">
+				<th><p class="text-center tweet">Tweet</p> </th> 
+				<th><p class="text-center tweet"><i>Example</i></p></th>
+				<tr>
+					<td>
+						<p class="text-center tweet">Title</p>
+					</td> <td>
+						<p class="text-center tweet"><i> Ventilator use in ICU </i></p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="text-center tweet">#date</p>
+					</td> <td>
+						<p class="text-center tweet"><i>#17-Nov-20</i></p>
+					</td>		
+				</tr>
+				<tr>
+					<td>
+						<p class="text-center tweet">#time</p>
+					</td> <td>
+						<p class="text-center tweet"><i>#8pm</i></p>
+					</td>		
+				</tr>
+				<tr>
+					<td>
+						<p class="text-center tweet">singup-link</p>
+					</td> <td>
+						<p class="text-center tweet"><i>signup.com/to_my_talk</i></p>
+					</td>		
+				</tr>
+				<tr>
+					<td>
+						<p class="text-center tweet">#hashtags</p>
+					</td> <td>
+						<p class="text-center tweet"><i>#ventilators #ICU</i></p>
+					</td>		
+				</tr>					
+		  </table>
+	</div>
+	
+	<div class="container listing space-evenly">
+
+		{% for date, events in date_events.items %}
+			<div class="date">
+				<h2>{{ date }}</h2>
+				{% for event in events %}
+					<div class="webinar">
+						<h4>{{ event.title }}</h4>
+						<p>{{ event.datetime }}</p>
+						<p>Registration link: <a href="{{event.link}}">{{ event.link}}</a> &nbsp; <a href="/event_finder/{{event.tweet_id}}">Calendar event</a></p>
+
+						
+					</div>
+				{% endfor %}
+			</div>
+		{% endfor %}
+		
+	</div>
+	
+	
+	
+	</div>
+</body>

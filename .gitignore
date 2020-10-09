@@ -3,3 +3,4 @@
 __pycache__
 *.xlsx
 tkirk_key.json
+db.sqlite3
