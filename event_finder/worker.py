@@ -4,14 +4,14 @@ import datetime
 
 from django.db.models import Max 
 
-from event_finder.twitter_api.tokens import oauth_tokens, accesss_tokens
+from webinarguru.settings import TWITTER_ACCESS_TOKENS, TWITTER_OAUTH_TOKENS
 from event_finder.twitter_api import parsers 
 from event_finder.models import Event
 from event_finder.twitter_api.tests import TWEETS
 
 def get_twitter_api():
-    auth = tweepy.OAuthHandler(*oauth_tokens)
-    auth.set_access_token(*accesss_tokens)
+    auth = tweepy.OAuthHandler(*TWITTER_OAUTH_TOKENS)
+    auth.set_access_token(*TWITTER_ACCESS_TOKENS)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     return api 
 
