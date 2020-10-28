@@ -5,3 +5,4 @@ __pycache__
 tkirk_key.json
 db.sqlite3
 secrets.json
+staticfiles
