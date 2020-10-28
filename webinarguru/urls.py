@@ -31,7 +31,7 @@ urlpatterns = [
     # re_path(r'.*', views.index)
 ]
 
-background_load_dummy_events_to_db(repeat=10, repeat_until=None)
+# background_load_dummy_events_to_db(repeat=10, repeat_until=None)
 # background_load_events_to_db(repeat=3600, repeat_until=None)
 
 # TODO: hide the secrets off git
