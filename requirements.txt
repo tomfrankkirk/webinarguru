@@ -2,3 +2,4 @@ django
 tweepy
 django-background-tasks
 python-dateutil
+django_heroku
