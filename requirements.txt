@@ -1,0 +1,4 @@
+django
+tweepy
+django-background-tasks
+dateutil
