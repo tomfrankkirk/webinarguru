@@ -1,0 +1,1 @@
+web: gunicorn webinarguru.wsgi --log-file -
