@@ -33,8 +33,8 @@ if os.path.exists(secrets_path):
 else:
     DEBUG = False 
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
-    TWITTER_OAUTH_TOKENS = os.environ['TWITTER_OAUTH_TOKENS']
-    TWITTER_ACCESS_TOKENS = os.environ['TWITTER_ACCESS_TOKENS']
+    TWITTER_OAUTH_TOKENS = os.environ['TWITTER_OAUTH_TOKENS'].split()
+    TWITTER_ACCESS_TOKENS = os.environ['TWITTER_ACCESS_TOKENS'].split()
 
 ALLOWED_HOSTS = []
 
