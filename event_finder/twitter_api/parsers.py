@@ -1,3 +1,4 @@
+from datetime import datetime
 import re 
 from urllib.parse import urlparse
 from urllib.parse import urlparse
@@ -6,8 +7,11 @@ import itertools
 
 from django.forms import URLField
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 DF_COLUMNS = ['title', 'datetime', 'link', 'hashtags', 'tweet_id']
+
+TZ = timezone.get_current_timezone() 
 
 def parse_time(string):
 
@@ -108,4 +112,6 @@ def parse_tweet(tid, string):
     out['title'] = " ".join(title)
     out['hashtags'] = " ".join(hashtags)
     out['tweet_id'] = tid
+    out['datetime'] = timezone.make_aware(out['datetime'], TZ, True)
+
     return out 

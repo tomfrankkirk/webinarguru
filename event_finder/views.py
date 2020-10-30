@@ -3,18 +3,17 @@ from itertools import repeat
 from django.forms.formsets import all_valid
 from django.shortcuts import render
 from django.http import HttpResponse
-from background_task import background
 import json 
 import ics
 import datetime
 
 from .models import Event
-NEW_THRESHOLD = datetime.datetime.now() + datetime.timedelta(weeks=8)
+from .db_updates import time_now
 
 # Create your views here.
 def index(request):
-
-    all_events = Event.objects.filter(datetime__lte=NEW_THRESHOLD).order_by('datetime')
+    cutoff = time_now() + datetime.timedelta(weeks=4)
+    all_events = Event.objects.filter(datetime__lte=cutoff).order_by('datetime')
     date_events = {}
     for e in all_events:
         dt = e.datetime.strftime('%a, %d %b %Y')
