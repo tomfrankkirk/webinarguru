@@ -43,7 +43,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'event_finder.apps.event_finderConfig',
-    'background_task',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
