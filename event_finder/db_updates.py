@@ -1,13 +1,17 @@
 import tweepy
-from background_task import background
 import datetime
-
 from django.db.models import Max 
+from django.utils import timezone
 
 from webinarguru.settings import TWITTER_ACCESS_TOKENS, TWITTER_OAUTH_TOKENS
 from event_finder.twitter_api import parsers 
 from event_finder.models import Event
 from event_finder.twitter_api.tests import TWEETS
+
+def time_now(): 
+    now = datetime.datetime.now()
+    return timezone.make_aware(now, 
+            timezone.get_current_timezone(), is_dst=True)
 
 def get_twitter_api():
     auth = tweepy.OAuthHandler(*TWITTER_OAUTH_TOKENS)
@@ -16,16 +20,11 @@ def get_twitter_api():
     return api 
 
 def delete_old_events():
-    thr = datetime.datetime.now() - datetime.timedelta(days=1)
+    thr = time_now() - datetime.timedelta(days=1)
     Event.objects.filter(datetime__lte=thr).delete()
 
-@background(remove_existing_tasks=True, schedule=0)
-def background_load_events_to_db():
-    print("Background update")
-    load_events_to_db()
-
 def load_events_to_db():
-    print("Real update DB")
+    print("Real DB update")
 
     delete_old_events()
     api = get_twitter_api()
@@ -56,13 +55,6 @@ def load_dummy_events_to_db():
         if not Event.objects.filter(id__exact=tid):
             parsed = parsers.parse_tweet(tid, tweet)
             e = Event(**parsed)
-            e.save()
+            if e.datetime > time_now():
+                e.save()
 
-@background(remove_existing_tasks=True, schedule=0)
-def background_load_dummy_events_to_db():
-    print("Background update")
-    load_dummy_events_to_db()
-
-
-if __name__ == '__main__':
-    load_events_to_db()
