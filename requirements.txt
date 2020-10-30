@@ -1,8 +1,8 @@
 django
 tweepy
-django-background-tasks
 python-dateutil
 django-heroku
 gunicorn 
 dateparser
 ics 
+apscheduler

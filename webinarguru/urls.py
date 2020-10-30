@@ -14,15 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from itertools import repeat
-import background_task
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import path, include, re_path
 
 import event_finder
-from background_task import background
-from event_finder.worker import (background_load_events_to_db, 
-    background_load_dummy_events_to_db)
 
 urlpatterns = [ 
     path('event_finder/', include('event_finder.urls')),
@@ -30,8 +26,3 @@ urlpatterns = [
     path('', event_finder.views.index)
     # re_path(r'.*', views.index)
 ]
-
-# background_load_dummy_events_to_db(repeat=10, repeat_until=None)
-# background_load_events_to_db(repeat=3600, repeat_until=None)
-
-# TODO: hide the secrets off git
