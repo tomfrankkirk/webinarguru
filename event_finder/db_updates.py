@@ -23,10 +23,13 @@ def delete_old_events():
     thr = time_now() - datetime.timedelta(days=1)
     Event.objects.filter(datetime__lte=thr).delete()
 
+def delete_all_events(): 
+    Event.objects.all().delete()
+
 def load_events_to_db():
     print("Real DB update")
 
-    delete_old_events()
+    delete_all_events()
     api = get_twitter_api()
     mentions = api.mentions_timeline(tweet_mode='extended', count=20)
     to_parse = zip([t.id for t in mentions], [t.full_text for t in mentions])
@@ -50,9 +53,10 @@ def load_events_to_db():
 
 def load_dummy_events_to_db():
     print("Dummy update")
-    delete_old_events()
+    delete_all_events()
     for tid, tweet in TWEETS:
-        if not Event.objects.filter(id__exact=tid):
+        import pdb; pdb.set_trace()
+        if not Event.objects.filter(tweet_id=tid):
             parsed = parsers.parse_tweet(tid, tweet)
             e = Event(**parsed)
             if e.datetime > time_now():
