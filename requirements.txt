@@ -5,4 +5,4 @@ django-heroku
 gunicorn 
 dateparser
 ics 
-apscheduler
+django-extensions

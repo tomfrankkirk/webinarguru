@@ -42,6 +42,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'event_finder.apps.event_finderConfig',
     'django.contrib.admin',
     'django.contrib.auth',
