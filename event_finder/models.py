@@ -7,7 +7,7 @@ class Event(models.Model):
     datetime = models.DateTimeField()
     link = models.URLField()
     hashtags = models.CharField(max_length=200)
-    tweet_id = models.IntegerField()
+    tweet_id = models.BigIntegerField()
 
     def __str__(self):
         return dedent(f"""
