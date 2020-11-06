@@ -25,24 +25,27 @@ def delete_all_events():
 def load_events_to_db():
     print("Real DB update")
 
+    last_tweet = Event.objects.aggregate(Max('tweet_id'))
+
     api = get_twitter_api()
-    mentions = api.mentions_timeline(tweet_mode='extended', count=20)
+    mentions = api.mentions_timeline(since_id=last_tweet['tweet_id__max'],
+                                    tweet_mode='extended')
     to_parse = zip([t.id for t in mentions], [t.full_text for t in mentions])
 
     parsed = 0 
     for tid, tweet_string in to_parse:
         if not Event.objects.filter(tweet_id=tid):
             try: 
-                parsed = parsers.parse_tweet(tid, tweet_string)
-                e = Event(**parsed)
+                e = parsers.parse_tweet(tid, tweet_string)
+                e = Event(**e)
                 if e.datetime > time_now(): 
                     e.save()
                     parsed += 1 
-            except RuntimeError as e: 
+            except RuntimeError as err: 
                 print(f"\nSkipped: {tid}\n")
                 pass 
-            except Exception as e: 
-                raise e
+            except Exception as err: 
+                raise err
         else: 
             parsed += 1
     print("parsed: ", parsed, "out of", len(mentions))

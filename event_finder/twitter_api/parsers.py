@@ -49,7 +49,7 @@ def validate_url(url):
 def parse_tweet(tid, string):
 
     # Split the tweet into single words 
-    raw_text = string.replace("\n", "").split()
+    raw_text = string.replace("\n", " ").split()
 
     # Store results in dict 
     out = dict(zip(DF_COLUMNS, itertools.repeat(None)))
