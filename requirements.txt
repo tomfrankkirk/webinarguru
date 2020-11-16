@@ -4,5 +4,5 @@ python-dateutil
 django-heroku
 gunicorn 
 dateparser
-ics 
+ics<0.8
 django-extensions
