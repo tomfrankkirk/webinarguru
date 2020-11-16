@@ -1,23 +1,16 @@
-import tweepy
 import datetime
 from django.db.models import Max 
 from django.utils import timezone
 
-from webinarguru.settings import TWITTER_ACCESS_TOKENS, TWITTER_OAUTH_TOKENS, DEBUG
-from event_finder.twitter_api import parsers 
 from event_finder.models import Event
 from event_finder.twitter_api.tests import TWEETS
+from event_finder.twitter_api import parsers
+from event_finder.twitter_api.api import get_twitter_api
 
 def time_now(): 
     now = datetime.datetime.now()
     return timezone.make_aware(now, 
             timezone.get_current_timezone(), is_dst=True)
-
-def get_twitter_api():
-    auth = tweepy.OAuthHandler(*TWITTER_OAUTH_TOKENS)
-    auth.set_access_token(*TWITTER_ACCESS_TOKENS)
-    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-    return api 
 
 def delete_all_events(): 
     Event.objects.all().delete()

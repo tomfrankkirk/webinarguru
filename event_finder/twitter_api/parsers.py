@@ -9,6 +9,8 @@ from django.forms import URLField
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+from .api import get_twitter_api
+
 DF_COLUMNS = ['title', 'datetime', 'link', 'hashtags', 'tweet_id']
 
 TZ = timezone.get_current_timezone() 
@@ -44,6 +46,14 @@ def validate_url(url):
     except ValidationError:
         return False
     return True
+
+
+def parse_tweet_by_id(tweet_id):
+    
+    api = get_twitter_api()
+    tweet = api.get_status(tweet_id, tweet_mode='extended')
+    assert tweet, 'No tweet returned for id %s' % tweet_id
+    return parse_tweet(tweet.id, tweet.full_text)
 
 
 def parse_tweet(tid, string):

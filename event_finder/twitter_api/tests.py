@@ -103,24 +103,25 @@ def test_tweets():
         parsed = parsers.parse_tweet(tweet)
         print(parsed)
 
-def test_sheet():
-    gc = pygsheets.authorize(service_file='tkirk_key.json')
-    sh = gc.open('testing')
-    wks = sh[0]
-    df = construct_sheet(wks.get_as_df(), TWEETS)
-    wks.set_dataframe(df,(1,1))
-    print(df)
+# def test_sheet():
+#     gc = pygsheets.authorize(service_file='tkirk_key.json')
+#     sh = gc.open('testing')
+#     wks = sh[0]
+#     df = construct_sheet(wks.get_as_df(), TWEETS)
+#     wks.set_dataframe(df,(1,1))
+#     print(df)
     
 
-def new_parsetime():
-    string = "Doesn't get much better than this! Our next Webinar on Acute Burns Monday 27th of July 20:00 (GMT) is open for registration. Definitely not one to miss. #SpreadTheWord @WebinarG @PlasticsFella @PLASTAUK @BritishBurn @plasticstrainee  https://t.co/BbzBtkw4Df"
-    fragments = string.split()
+# def new_parsetime():
+#     string = "Doesn't get much better than this! Our next Webinar on Acute Burns Monday 27th of July 20:00 (GMT) is open for registration. Definitely not one to miss. #SpreadTheWord @WebinarG @PlasticsFella @PLASTAUK @BritishBurn @plasticstrainee  https://t.co/BbzBtkw4Df"
+#     fragments = string.split()
 
-    for substring in [ fragments[x:y] for x,y in itertools.combinations(range(len(fragments)+1), 2)]:
-        try: 
-            joined = " ".join(substring)
-            dt = dateparser.parse(joined)
-            if dt is not None: 
-                print(dt)
-        except: 
-            pass 
+#     for substring in [ fragments[x:y] for x,y in itertools.combinations(range(len(fragments)+1), 2)]:
+#         try: 
+#             joined = " ".join(substring)
+#             dt = dateparser.parse(joined)
+#             if dt is not None: 
+#                 print(dt)
+#         except: 
+#             pass 
+
