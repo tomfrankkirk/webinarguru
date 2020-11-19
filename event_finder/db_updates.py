@@ -1,4 +1,5 @@
 import datetime
+from event_finder.twitter_api.parsers import TweetParseError
 from django.db.models import Max 
 from django.utils import timezone
 
@@ -34,8 +35,8 @@ def load_events_to_db():
                 if e.datetime > time_now(): 
                     e.save()
                     parsed += 1 
-            except RuntimeError as err: 
-                print(f"\nSkipped: {tid}\n")
+            except TweetParseError as err: 
+                print(f"\nSkipped: {tid}\n{tweet_string}\n")
                 pass 
             except Exception as err: 
                 raise err

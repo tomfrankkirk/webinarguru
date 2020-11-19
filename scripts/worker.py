@@ -7,4 +7,4 @@ def run():
     db_updates.prune_events()
     # db_updates.load_dummy_events_to_db()
     db_updates.load_events_to_db()
-    # parsers.parse_tweet_by_id(1325160954644946944)
+    # parsers.parse_tweet_by_id(1329415689657049088)
