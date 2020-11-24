@@ -36,13 +36,12 @@ def load_events_to_db():
                     e.save()
                     parsed += 1 
             except TweetParseError as err: 
-                print(f"\nSkipped: {tid}\n{tweet_string}\n")
+                print(f"\nSkipped: {tid}\n{tweet_string}")
+                print(f"Error: {err}")
                 pass 
             except Exception as err: 
                 raise err
-        else: 
-            parsed += 1
-    print("parsed: ", parsed, "out of", len(mentions))
+    print(f"Added {parsed} new events")
 
 def load_dummy_events_to_db():
     print("Dummy update")

@@ -65,7 +65,7 @@ def test_against_current_db():
     events = Event.objects.all()
     for event in events: 
         tweet = api.get_status(event.tweet_id, tweet_mode='extended')
-        parse_tweet(tweet.id, tweet.full_text)
+        assert parse_tweet(tweet.id, tweet.full_text)
 
 
 def parse_tweet(tid, string):
@@ -90,7 +90,7 @@ def parse_tweet(tid, string):
 
             # Try and parse as a combined datetime first 
             try: 
-                dt = parse_datetime(f, fuzzy=True)
+                dt = parse_datetime(f)
                 out['datetime'].append(dt) 
                 if len(out['datetime']) > 2: 
                     raise TweetParseError("Parsed more than two datetimes")

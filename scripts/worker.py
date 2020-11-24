@@ -4,10 +4,9 @@ from webinarguru.settings import DEBUG
 
 def run():
     print("debug:", DEBUG)
+    # parsers.parse_tweet_by_id(1328670250045419520)
     if DEBUG:
         parsers.test_against_current_db()
     db_updates.prune_events()
-    # db_updates.load_dummy_events_to_db()
     db_updates.load_events_to_db()
-    # parsers.parse_tweet_by_id(1329415689657049088)
     # retweet.retweet_events()
