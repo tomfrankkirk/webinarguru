@@ -1,4 +1,5 @@
 from datetime import datetime
+from event_finder.models import Event
 import re 
 from urllib.parse import urlparse
 from urllib.parse import urlparse
@@ -19,8 +20,6 @@ class TweetParseError(Exception):
     pass 
 
 def parse_time(string):
-
-    time = None 
     
     time_digits = re.findall(r'\d', string)
     if len(time_digits) == 4: 
@@ -32,11 +31,14 @@ def parse_time(string):
     elif re.match(r'\d*[\.\:\sh]{1}(\d)?', string):
         time = re.match(r'\d*[\.\:\sh,]{1}(\d)?', string).group()
 
-    if time: 
-        time = int("".join(re.findall('\d', time)))
-        if time < 100: time *= 100
-        if string.count('pm') and (time < 1159): time += 1200 
-        return f"{time:04d}"
+    try: 
+        if bool(time_digits) and bool(time): 
+            time = int("".join(re.findall('\d', time)))
+            if time < 100: time *= 100
+            if string.count('pm') and (time < 1159): time += 1200 
+            return f"{time:04d}"
+    except Exception: 
+        pass 
 
     else: 
         return None 
@@ -52,11 +54,18 @@ def validate_url(url):
 
 
 def parse_tweet_by_id(tweet_id):
-    
     api = get_twitter_api()
     tweet = api.get_status(tweet_id, tweet_mode='extended')
     assert tweet, 'No tweet returned for id %s' % tweet_id
     return parse_tweet(tweet.id, tweet.full_text)
+
+
+def test_against_current_db():
+    api = get_twitter_api()
+    events = Event.objects.all()
+    for event in events: 
+        tweet = api.get_status(event.tweet_id, tweet_mode='extended')
+        parse_tweet(tweet.id, tweet.full_text)
 
 
 def parse_tweet(tid, string):
@@ -117,7 +126,7 @@ def parse_tweet(tid, string):
 
     # If we didn't get a title, datetime and link, give up 
     if not all([title, bool(out['datetime']), out['link']]):
-        raise TweetParseError("Could not parse tweet") 
+        raise TweetParseError("Could not find one of title, date/time or weblink") 
 
     # If we parsed two datetime objects, then assume one of them 
     # represents time and the other date. We need to merge the time
@@ -139,7 +148,10 @@ def parse_tweet(tid, string):
             raise TweetParseError("Could not merge two datetimes")
 
     elif not out['datetime'][0].hour: 
-        time = out.pop('time')
+        try: 
+            time = out.pop('time')
+        except KeyError: 
+            raise TweetParseError("Date parsed but no time")
         date = out.pop('datime')[0]
         final_datetime = date.replace(
             hour=int(time[:2]), minute=int(time[2:]))

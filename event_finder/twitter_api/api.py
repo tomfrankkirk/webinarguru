@@ -8,3 +8,4 @@ def get_twitter_api():
     auth.set_access_token(*TWITTER_ACCESS_TOKENS)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     return api 
+

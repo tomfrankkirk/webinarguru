@@ -20,10 +20,10 @@ def load_events_to_db():
     print("Real DB update")
 
     last_tweet = Event.objects.aggregate(Max('tweet_id'))
+    # since_id=last_tweet['tweet_id__max']
 
     api = get_twitter_api()
-    mentions = api.mentions_timeline(since_id=last_tweet['tweet_id__max'],
-                                    tweet_mode='extended')
+    mentions = api.mentions_timeline(tweet_mode='extended', count=30)
     to_parse = zip([t.id for t in mentions], [t.full_text for t in mentions])
 
     parsed = 0 
