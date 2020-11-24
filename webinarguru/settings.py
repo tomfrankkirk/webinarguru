@@ -31,7 +31,7 @@ if os.path.exists(secrets_path):
     del sjson
 
 else:
-    DEBUG = True 
+    DEBUG = False 
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
     TWITTER_OAUTH_TOKENS = os.environ['TWITTER_OAUTH_TOKENS'].split()
     TWITTER_ACCESS_TOKENS = os.environ['TWITTER_ACCESS_TOKENS'].split()
