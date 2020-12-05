@@ -6,7 +6,7 @@ from event_finder.db_updates import time_now
 from webinarguru.settings import DEBUG
 
 RETWEET_TIME_HRS = timedelta(hours=24)
-UPDATE_FREQ_MINS = 10 
+UPDATE_FREQ_MINS = 10
 
 def retweet_events(): 
     api = get_twitter_api()
@@ -24,5 +24,8 @@ def retweet_events():
             if DEBUG:
                 print("Retweeting", event.tweet_id)
             else:
-                api.retweet(event.tweet_id)
+                try: 
+                    api.retweet(event.tweet_id)
+                except Exception: 
+                    print(f"WARNING: could not retweet {event.tweet_id}")
 
