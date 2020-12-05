@@ -125,8 +125,14 @@ def parse_tweet(tid, string):
             title.append(fragment)
 
     # If we didn't get a title, datetime and link, give up 
-    if not all([title, bool(out['datetime']), out['link']]):
-        raise TweetParseError("Could not find one of title, date/time or weblink") 
+    if not title:
+        raise TweetParseError("Could not find title") 
+
+    if not bool(out['datetime']): 
+        raise TweetParseError("Could not find date/time")
+
+    if not out['link']:
+        raise TweetParseError("Could not find weblink")
 
     # If we parsed two datetime objects, then assume one of them 
     # represents time and the other date. We need to merge the time
